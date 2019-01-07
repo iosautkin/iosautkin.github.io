@@ -177,16 +177,18 @@ function Init() {
 	window.addEventListener('resize', OnResizeWindow);
 	window.addEventListener('wheel', OnZoom);
 	let downClientX, downClientY;
-	window.addEventListener('mousedown', ({ clientX, clientY }) => {
-		downClientX = clientX;
-		downClientY = clientY;
-	});
+	// window.addEventListener('mousedown', ({ clientX, clientY }) => {
+	// 	downClientX = clientX;
+	// 	downClientY = clientY;
+	// });
 	window.addEventListener('touchstart', e => {
 		const { clientX, clientY } = e.touches[0];
-		downClientX = clientX;
-		downClientY = clientY;
+		console.log(clientX, clientY);
+		downClientX = Math.floor(clientX);
+		downClientY = Math.floor(clientY);
 	});
 	window.addEventListener('click', ({ deltaY, clientX, clientY }) => {
+		console.log(downClientX, clientX, downClientY, clientY);
 		if (downClientX !== clientX || downClientY !== clientY) return;
 		OnZoom({ clientX, clientY, isClick: true, deltaY: -1 });
 	});
