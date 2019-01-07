@@ -176,6 +176,9 @@ void main() {
 function Init() {
 	window.addEventListener('resize', OnResizeWindow);
 	window.addEventListener('wheel', OnZoom);
+	window.addEventListener('dblclick', ({ deltaY, clientX, clientY }) => {
+		OnZoom({ clientX, clientY, isDoubleClick: true });
+	});
 	window.addEventListener('mousemove', OnMouseMove);
 
 	var canvas = document.getElementById('gl-surface');
@@ -322,7 +325,7 @@ function Init() {
 
 	
 		// animated variables
-		const zoomSpeed = 0.25;
+		const zoomSpeed = 0.2;
 		minI = minI + (minIDest - minI) * zoomSpeed;
 		maxI = maxI + (maxIDest - maxI) * zoomSpeed;
 		minR = minR + (minRDest - minR) * zoomSpeed;
@@ -387,15 +390,18 @@ function Init() {
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 	}
 
-	function OnZoom({ deltaY, clientX, clientY }) {
+	function OnZoom({ deltaY = -1, clientX, clientY, isDoubleClick }) {
+		const scaleMultiplier = isDoubleClick
+			? 0.2
+			: (deltaY < 0 ? 0.5 : 2);
 		const { innerWidth, innerHeight } = window;
 
 		var imaginaryRange = maxIDest - minIDest;
-		var newRange = imaginaryRange * (deltaY < 0 ? 0.5 : 1.7);
+		var newRange = imaginaryRange * scaleMultiplier;
 
 		if (newRange < 0.00004 || newRange > 5) return;
 
-		var offsetY = (imaginaryRange - newRange) / 2;
+		var offsetY = imaginaryRange - newRange;
 		var vertPercent = clientY / innerHeight;
 
 		minIDest += offsetY * (1 - vertPercent);
@@ -403,8 +409,8 @@ function Init() {
 
 
 		var oldRealRange = maxRDest - minRDest;
-		var newRealRange = oldRealRange * (deltaY < 0 ? 0.5 : 1.7);
-		var offsetX = (oldRealRange - newRealRange) / 2;
+		var newRealRange = oldRealRange * scaleMultiplier;
+		var offsetX = oldRealRange - newRealRange;
 		var horizPercent = clientX / innerWidth;
 
 		minRDest += offsetX * horizPercent;
