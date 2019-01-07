@@ -142,7 +142,7 @@ void main()
 
 	for (int i = 0; i < imaxIterations; i++) {
 		float xtemp = z.x * z.x - z.y * z.y + c.x;
-		z.y = 2.0 * mix(abs(z.x * z.y), z.x * z.y, max(mandelbrotCoeff, juliaCoeff)) + c.y;
+		z.y = 2.0 * mix(z.x * z.y, abs(z.x * z.y), burningShipCoeff) + c.y;
 		z.x = xtemp;
 		if (z.x * z.x + z.y * z.y > 256.0) break;
 
@@ -372,13 +372,13 @@ function Init() {
 			return;
 		}
 
-		const { clientWidth, clientHeight } = window.document.body.clientHeight;
-		canvas.width = clientWidth;
-		canvas.height = clientHeight;
+		const { innerWidth, innerHeight } = window;
+		canvas.width = innerWidth;
+		canvas.height = innerHeight;
 
-		vpDimensions = [clientWidth, clientHeight];
+		vpDimensions = [innerWidth, innerHeight];
 
-		var newRealRange = (maxI - minI) * (clientWidth / clientHeight) / 1.0; // 1.4
+		var newRealRange = (maxI - minI) * (innerWidth / innerHeight) / 1.0; // 1.4
 		var oldRealRange = maxR - minR;
 
 		minR = minRDest -= (newRealRange - oldRealRange) / 2;
@@ -388,7 +388,7 @@ function Init() {
 	}
 
 	function OnZoom({ deltaY, clientX, clientY }) {
-		const { clientWidth, clientHeight } = window.document.body.clientHeight;
+		const { innerWidth, innerHeight } = window;
 
 		var imaginaryRange = maxIDest - minIDest;
 		var newRange = imaginaryRange * (deltaY < 0 ? 0.5 : 1.7);
@@ -396,7 +396,7 @@ function Init() {
 		if (newRange < 0.00004 || newRange > 5) return;
 
 		var offsetY = (imaginaryRange - newRange) / 2;
-		var vertPercent = clientY / clientHeight;
+		var vertPercent = clientY / innerHeight;
 
 		minIDest += offsetY * (1 - vertPercent);
 		maxIDest -= offsetY * vertPercent;
@@ -405,7 +405,7 @@ function Init() {
 		var oldRealRange = maxRDest - minRDest;
 		var newRealRange = oldRealRange * (deltaY < 0 ? 0.5 : 1.7);
 		var offsetX = (oldRealRange - newRealRange) / 2;
-		var horizPercent = clientX / clientWidth;
+		var horizPercent = clientX / innerWidth;
 
 		minRDest += offsetX * horizPercent;
 		maxRDest -= offsetX * (1 - horizPercent);
