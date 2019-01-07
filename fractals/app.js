@@ -372,14 +372,13 @@ function Init() {
 			return;
 		}
 
+		const { clientWidth, clientHeight } = window.document.body.clientHeight;
+		canvas.width = clientWidth;
+		canvas.height = clientHeight;
 
-		const { innerWidth, innerHeight } = window;
-		canvas.width = innerWidth;
-		canvas.height = innerHeight;
+		vpDimensions = [clientWidth, clientHeight];
 
-		vpDimensions = [innerWidth, innerHeight];
-
-		var newRealRange = (maxI - minI) * (innerWidth / innerHeight) / 1.0; // 1.4
+		var newRealRange = (maxI - minI) * (clientWidth / clientHeight) / 1.0; // 1.4
 		var oldRealRange = maxR - minR;
 
 		minR = minRDest -= (newRealRange - oldRealRange) / 2;
@@ -389,7 +388,7 @@ function Init() {
 	}
 
 	function OnZoom({ deltaY, clientX, clientY }) {
-		const { innerWidth, innerHeight } = window;
+		const { clientWidth, clientHeight } = window.document.body.clientHeight;
 
 		var imaginaryRange = maxIDest - minIDest;
 		var newRange = imaginaryRange * (deltaY < 0 ? 0.5 : 1.7);
@@ -397,7 +396,7 @@ function Init() {
 		if (newRange < 0.00004 || newRange > 5) return;
 
 		var offsetY = (imaginaryRange - newRange) / 2;
-		var vertPercent = clientY / innerHeight;
+		var vertPercent = clientY / clientHeight;
 
 		minIDest += offsetY * (1 - vertPercent);
 		maxIDest -= offsetY * vertPercent;
@@ -406,7 +405,7 @@ function Init() {
 		var oldRealRange = maxRDest - minRDest;
 		var newRealRange = oldRealRange * (deltaY < 0 ? 0.5 : 1.7);
 		var offsetX = (oldRealRange - newRealRange) / 2;
-		var horizPercent = clientX / innerWidth;
+		var horizPercent = clientX / clientWidth;
 
 		minRDest += offsetX * horizPercent;
 		maxRDest -= offsetX * (1 - horizPercent);
@@ -438,3 +437,12 @@ function Init() {
 		trippyPaletteCoeffDest = type === 'trippy' ? 1.0 : 0;
 	}
 }
+
+window.addEventListener('gestureend', function(e) {
+	e.preventDefault();
+  if (e.scale < 1.0) {
+    alert(e.scale);
+  } else if (e.scale > 1.0) {
+    alert(e.scale);
+  }
+}, false);
