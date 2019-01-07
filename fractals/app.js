@@ -441,17 +441,19 @@ function Init() {
 		maxRDest -= offsetX * (1 - horizPercent);
 	}
 
-	function OnMove({ movementY, movementX }) {
-		var iRange = maxI - minI;
-		var rRange = maxR - minR;
+	function OnMove({ movementY, movementX, buttons }) {
+		if (buttons === 1 || (!buttons && buttons !== 0)) {
+			var iRange = maxI - minI;
+			var rRange = maxR - minR;
 
-		var iDelta = (movementY / canvas.clientHeight) * iRange;
-		var rDelta = (movementX / canvas.clientWidth) * rRange;
+			var iDelta = (movementY / canvas.clientHeight) * iRange;
+			var rDelta = (movementX / canvas.clientWidth) * rRange;
 
-		minI = minIDest += iDelta;
-		maxI = maxIDest += iDelta;
-		minR = minRDest -= rDelta;
-		maxR = maxRDest -= rDelta;
+			minI = minIDest += iDelta;
+			maxI = maxIDest += iDelta;
+			minR = minRDest -= rDelta;
+			maxR = maxRDest -= rDelta;
+		}
 	}
 
 	window.setFractalType = (type = 'mandelbrot') => {
