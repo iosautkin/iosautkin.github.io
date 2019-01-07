@@ -137,7 +137,7 @@ void main()
 	vec2 c = mix(z, lissajous(), juliaCoeff);
 
 	float iterations = 0.0;
-	const int imaxIterations = 200;
+	const int imaxIterations = 400;
 	float maxIterations = float(imaxIterations);
 
 	for (int i = 0; i < imaxIterations; i++) {
