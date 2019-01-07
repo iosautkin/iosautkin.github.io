@@ -31,8 +31,8 @@
 			.zoom-out {
 				display: none;
 				position: fixed;
-				top: 48px;
-				left: 8px;
+				bottom: 8px;
+				right: 8px;
 				padding: 16px;
 				font-size: 24px;
 				background: rgba(255, 255, 255, 0.25);
@@ -42,10 +42,9 @@
 				.zoom-out {
 					display: block;
 				}
-			}
-			@media (min-width: 0px) and (max-width: 1024px) and (orientation: landscape) {
-				.zoom-out {
-					display: block;
+				.panel {
+					top: auto;
+					bottom: 0px;
 				}
 			}
 		</style>
