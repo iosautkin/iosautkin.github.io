@@ -410,11 +410,11 @@ function Init() {
 			return;
 		}
 
-		const { innerWidth, innerHeight } = window;
+		const { innerWidth, innerHeight, devicePixelRatio } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
 
-		vpDimensions = [innerWidth, innerHeight];
+		vpDimensions = [innerWidth * devicePixelRatio, innerHeight * devicePixelRatio];
 
 		var newRealRange = (maxI - minI) * (innerWidth / innerHeight) / 1.0; // 1.4
 		var oldRealRange = maxR - minR;
@@ -429,7 +429,7 @@ function Init() {
 		const scaleMultiplier = isClick
 			? (deltaY < 0 ? 0.2 : 5)
 			: (deltaY < 0 ? 0.5 : 2);
-		const { innerWidth, innerHeight } = window;
+		const { innerWidth, innerHeight, devicePixelRatio } = window;
 
 		var imaginaryRange = maxIDest - minIDest;
 		var newRange = imaginaryRange * scaleMultiplier;
@@ -437,7 +437,7 @@ function Init() {
 		if (newRange < 0.00004 || newRange > 5) return;
 
 		var offsetY = imaginaryRange - newRange;
-		var vertPercent = clientY / innerHeight;
+		var vertPercent = clientY / (innerHeight * devicePixelRatio);
 
 		minIDest += offsetY * (1 - vertPercent);
 		maxIDest -= offsetY * vertPercent;
@@ -446,7 +446,7 @@ function Init() {
 		var oldRealRange = maxRDest - minRDest;
 		var newRealRange = oldRealRange * scaleMultiplier;
 		var offsetX = oldRealRange - newRealRange;
-		var horizPercent = clientX / innerWidth;
+		var horizPercent = clientX / (innerWidth * devicePixelRatio);
 
 		minRDest += offsetX * horizPercent;
 		maxRDest -= offsetX * (1 - horizPercent);
