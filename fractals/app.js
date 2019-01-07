@@ -181,6 +181,11 @@ function Init() {
 		downClientX = clientX;
 		downClientY = clientY;
 	});
+	window.addEventListener('touchstart', e => {
+		const { clientX, clientY } = e.touches[0];
+		downClientX = clientX;
+		downClientY = clientY;
+	});
 	window.addEventListener('click', ({ deltaY, clientX, clientY }) => {
 		if (downClientX !== clientX || downClientY !== clientY) return;
 		OnZoom({ clientX, clientY, isClick: true, deltaY: -1 });
