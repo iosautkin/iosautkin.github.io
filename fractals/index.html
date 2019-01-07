@@ -21,11 +21,31 @@
 				padding: 8px;
 				display: flex;
 				z-index: 100;
-				opacity: 0.2;
+				opacity: 0.25;
 				transition: all 0.1s;
 			}
 			.panel:hover{
 				opacity: 1;
+			}
+			.zoom-out {
+				display: none;
+				position: fixed;
+				top: 48px;
+				left: 8px;
+				padding: 16px;
+				font-size: 24px;
+				background: rgba(255, 255, 255, 0.25);
+				z-index: 200;
+			}
+			@media (min-width: 0px) and (max-width: 1024px) {
+				.zoom-out {
+					display: block;
+				}
+			}
+			@media (min-width: 0px) and (max-width: 1024px) and (orientation: landscape) {
+				.zoom-out {
+					display: block;
+				}
 			}
 		</style>
 	</head>
@@ -49,6 +69,10 @@
 				<option value="cycled">Cycled</option>
 				<option value="trippy">Trippy</option>
 			</select>
+		</div>
+
+		<div class="zoom-out">
+			<-
 		</div>
 
 		<canvas id="gl-surface" class="canvas" style="width: 100vw; height: 100vh; ">

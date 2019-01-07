@@ -137,7 +137,7 @@ void main()
 	vec2 c = mix(z, lissajous(), juliaCoeff);
 
 	float iterations = 0.0;
-	const int imaxIterations = 400;
+	const int imaxIterations = 200;
 	float maxIterations = float(imaxIterations);
 
 	for (int i = 0; i < imaxIterations; i++) {
@@ -177,9 +177,33 @@ function Init() {
 	window.addEventListener('resize', OnResizeWindow);
 	window.addEventListener('wheel', OnZoom);
 	window.addEventListener('dblclick', ({ deltaY, clientX, clientY }) => {
-		OnZoom({ clientX, clientY, isDoubleClick: true });
+		OnZoom({ clientX, clientY, isDoubleClick: true, deltaY: -1 });
 	});
-	window.addEventListener('mousemove', OnMouseMove);
+	document.querySelector('.zoom-out').addEventListener('click', () => {
+		OnZoom({
+			clientX: window.innerWidth / 2,
+			clientY: window.innerHeight / 2,
+			isDoubleClick: true, deltaY: 1
+		});
+	});
+	window.addEventListener('mousemove', OnMove);
+
+	let touchX = 0;
+	let touchY = 0;
+	window.addEventListener('touchstart', e => {
+		touchX = e.touches[0].clientX;
+		touchY = e.touches[0].clientY;
+	});
+	window.addEventListener('touchmove', e => {
+		const { clientX, clientY } = e.touches[0];
+		OnMove({
+			movementX: clientX - touchX,
+			movementY: clientY - touchY,
+		});
+		touchX = clientX;
+		touchY = clientY;
+	});
+
 
 	var canvas = document.getElementById('gl-surface');
 	var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -392,7 +416,7 @@ function Init() {
 
 	function OnZoom({ deltaY = -1, clientX, clientY, isDoubleClick }) {
 		const scaleMultiplier = isDoubleClick
-			? 0.2
+			? (deltaY < 0 ? 0.2 : 5)
 			: (deltaY < 0 ? 0.5 : 2);
 		const { innerWidth, innerHeight } = window;
 
@@ -417,19 +441,17 @@ function Init() {
 		maxRDest -= offsetX * (1 - horizPercent);
 	}
 
-	function OnMouseMove(e) {
-		if (e.buttons === 1) {
-			var iRange = maxI - minI;
-			var rRange = maxR - minR;
+	function OnMove({ movementY, movementX }) {
+		var iRange = maxI - minI;
+		var rRange = maxR - minR;
 
-			var iDelta = (e.movementY / canvas.clientHeight) * iRange;
-			var rDelta = (e.movementX / canvas.clientWidth) * rRange;
+		var iDelta = (movementY / canvas.clientHeight) * iRange;
+		var rDelta = (movementX / canvas.clientWidth) * rRange;
 
-			minI = minIDest += iDelta;
-			maxI = maxIDest += iDelta;
-			minR = minRDest -= rDelta;
-			maxR = maxRDest -= rDelta;
-		}
+		minI = minIDest += iDelta;
+		maxI = maxIDest += iDelta;
+		minR = minRDest -= rDelta;
+		maxR = maxRDest -= rDelta;
 	}
 
 	window.setFractalType = (type = 'mandelbrot') => {
@@ -443,12 +465,3 @@ function Init() {
 		trippyPaletteCoeffDest = type === 'trippy' ? 1.0 : 0;
 	}
 }
-
-window.addEventListener('gestureend', function(e) {
-	e.preventDefault();
-  if (e.scale < 1.0) {
-    alert(e.scale);
-  } else if (e.scale > 1.0) {
-    alert(e.scale);
-  }
-}, false);
