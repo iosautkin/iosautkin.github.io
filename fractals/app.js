@@ -410,11 +410,11 @@ function Init() {
 			return;
 		}
 
-		const { innerWidth, innerHeight, devicePixelRatio } = window;
+		const { innerWidth, innerHeight } = window;
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
 
-		vpDimensions = [innerWidth * devicePixelRatio, innerHeight * devicePixelRatio];
+		vpDimensions = [innerWidth, innerHeight];
 
 		var newRealRange = (maxI - minI) * (innerWidth / innerHeight) / 1.0; // 1.4
 		var oldRealRange = maxR - minR;
