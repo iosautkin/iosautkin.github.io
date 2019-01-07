@@ -176,14 +176,20 @@ void main() {
 function Init() {
 	window.addEventListener('resize', OnResizeWindow);
 	window.addEventListener('wheel', OnZoom);
-	window.addEventListener('dblclick', ({ deltaY, clientX, clientY }) => {
-		OnZoom({ clientX, clientY, isDoubleClick: true, deltaY: -1 });
+	let downClientX, downClientY;
+	window.addEventListener('mousedown', ({ clientX, clientY }) => {
+		downClientX = clientX;
+		downClientY = clientY;
+	});
+	window.addEventListener('click', ({ deltaY, clientX, clientY }) => {
+		if (downClientX !== clientX || downClientY !== clientY) return;
+		OnZoom({ clientX, clientY, isClick: true, deltaY: -1 });
 	});
 	document.querySelector('.zoom-out').addEventListener('click', () => {
 		OnZoom({
 			clientX: window.innerWidth / 2,
 			clientY: window.innerHeight / 2,
-			isDoubleClick: true, deltaY: 1
+			isClick: true, deltaY: 1
 		});
 	});
 	window.addEventListener('mousemove', OnMove);
@@ -414,8 +420,8 @@ function Init() {
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 	}
 
-	function OnZoom({ deltaY = -1, clientX, clientY, isDoubleClick }) {
-		const scaleMultiplier = isDoubleClick
+	function OnZoom({ deltaY = -1, clientX, clientY, isClick }) {
+		const scaleMultiplier = isClick
 			? (deltaY < 0 ? 0.2 : 5)
 			: (deltaY < 0 ? 0.5 : 2);
 		const { innerWidth, innerHeight } = window;
