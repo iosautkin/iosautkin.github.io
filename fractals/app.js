@@ -117,7 +117,7 @@ vec2 lissajous() {
 	const float b = 4.0;
 	const float w = 3.1415926 / 2.0;
 
-	float t = 14.52/20.0; // ~14.52, ~19.1, ~29.85, 33.85, 43.05, 45.57
+	float t = 14.5107/20.0; // ~14.52, ~19.1, ~29.85, 33.85, 43.05, 45.57
 	float x = sin(a * t + w);
 	float y = sin(b * t);
 
@@ -410,7 +410,10 @@ function Init() {
 			return;
 		}
 
-		const { innerWidth, innerHeight } = window;
+		let { innerWidth, innerHeight, devicePixelRatio } = window;
+		innerHeight *= devicePixelRatio;
+		innerWidth *= devicePixelRatio;
+	
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
 
@@ -429,7 +432,12 @@ function Init() {
 		const scaleMultiplier = isClick
 			? (deltaY < 0 ? 0.2 : 5)
 			: (deltaY < 0 ? 0.5 : 2);
-		const { innerWidth, innerHeight } = window;
+
+		let { innerWidth, innerHeight, devicePixelRatio } = window;
+		innerHeight *= devicePixelRatio;
+		innerWidth *= devicePixelRatio;
+		const clientXScaled = clientX * devicePixelRatio;
+		const clientYScaled = clientY * devicePixelRatio;
 
 		var imaginaryRange = maxIDest - minIDest;
 		var newRange = imaginaryRange * scaleMultiplier;
@@ -437,7 +445,7 @@ function Init() {
 		if (newRange < 0.00004 || newRange > 5) return;
 
 		var offsetY = imaginaryRange - newRange;
-		var vertPercent = clientY / innerHeight;
+		var vertPercent = clientYScaled / innerHeight;
 
 		minIDest += offsetY * (1 - vertPercent);
 		maxIDest -= offsetY * vertPercent;
@@ -446,7 +454,7 @@ function Init() {
 		var oldRealRange = maxRDest - minRDest;
 		var newRealRange = oldRealRange * scaleMultiplier;
 		var offsetX = oldRealRange - newRealRange;
-		var horizPercent = clientX / innerWidth;
+		var horizPercent = clientXScaled / innerWidth;
 
 		minRDest += offsetX * horizPercent;
 		maxRDest -= offsetX * (1 - horizPercent);
